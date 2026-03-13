@@ -436,7 +436,7 @@ class GPS:
         """Returns number of bytes available in UART read buffer"""
         #return self._uart.in_waiting
         result = self._uart.any()
-        return result if result == 0 else result / 8
+        return result if result == 0 else int(result / 8)
 
     def readline(self) -> Optional[bytes]:
         """Returns a newline terminated bytestring, must have timeout set for
