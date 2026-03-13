@@ -34,7 +34,7 @@ from micropython import const
 try:
     from typing import List, Optional, Tuple
 
-    from busio import I2C, UART
+    from machine import I2C, UART
     from circuitpython_typing import ReadableBuffer
     from typing_extensions import Literal
 except ImportError:
@@ -412,7 +412,7 @@ class GPS:
         return self.fix_quality_3d is not None and self.fix_quality_3d >= 2
 
     @property
-    def datetime(self) -> Optional[time.struct_time]:
+    def datetime(self) -> Optional[List]:
         """Return struct_time object to feed rtc.set_time_source() function"""
         return self.timestamp_utc
 
@@ -434,7 +434,9 @@ class GPS:
     @property
     def in_waiting(self) -> int:
         """Returns number of bytes available in UART read buffer"""
-        return self._uart.in_waiting
+        #return self._uart.in_waiting
+        result = self._uart.any()
+        return result if result == 0 else result / 8
 
     def readline(self) -> Optional[bytes]:
         """Returns a newline terminated bytestring, must have timeout set for
@@ -506,7 +508,7 @@ class GPS:
             month = int(date[2:4])
             year = 2000 + int(date[4:6])
 
-        self.timestamp_utc = time.struct_time((year, month, day, hours, mins, secs, 0, 0, -1))
+        self.timestamp_utc = [year, month, day, hours, mins, secs, 0, 0, -1]
 
     def _parse_vtg(self, data: List[str]) -> bool:
         # VTG - Course Over Ground and Ground Speed
@@ -712,7 +714,7 @@ class GPS:
         sat_tup = data[3:]
 
         satlist = []
-        timestamp = time.monotonic()
+        timestamp = time.time_ns()
         for i in range(len(sat_tup) // 4):
             j = i * 4
             value = (
@@ -743,7 +745,7 @@ class GPS:
                 else:
                     # Remove all satellites which haven't
                     # been seen for 30 seconds
-                    timestamp = time.monotonic()
+                    timestamp = time.time_ns()
                     old = []
                     for sat_id, sat_data in self.sats.items():
                         if (timestamp - sat_data[4]) > 30:
@@ -812,8 +814,8 @@ class GPS_GtopI2C(GPS):
     def readline(self) -> Optional[bytearray]:
         """Returns a newline terminated bytearray, must have timeout set for
         the underlying UART or this will block forever!"""
-        timeout = time.monotonic() + self._timeout
-        while timeout > time.monotonic():
+        timeout = time.time_ns() + self._timeout
+        while timeout > time.time_ns():
             # check if our internal buffer has a '\n' termination already
             if self._internalbuffer and (self._internalbuffer[-1] == 0x0A):
                 break

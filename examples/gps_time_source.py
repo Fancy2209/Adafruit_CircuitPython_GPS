@@ -28,8 +28,8 @@ the_rtc = rtc.RTC()
 
 
 def _format_datetime(datetime):
-    date_part = f"{datetime.tm_mon:02}/{datetime.tm_mday:02}/{datetime.tm_year}"
-    time_part = f"{datetime.tm_hour:02}:{datetime.tm_min:02}:{datetime.tm_sec:02}"
+    date_part = f"{datetime[1]:02}/{datetime[2]:02}/{datetime[0]}"
+    time_part = f"{datetime[3]:02}:{datetime[4]:02}:{datetime[5]:02}"
     return f"{date_part} {time_part}"
 
 

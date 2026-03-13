@@ -78,12 +78,12 @@ while True:
         print("=" * 40)  # Print a separator line.
         print(
             "Fix timestamp: {}/{}/{} {:02}:{:02}:{:02}".format(  # noqa: UP032
-                gps.timestamp_utc.tm_mon,  # Grab parts of the time from the
-                gps.timestamp_utc.tm_mday,  # struct_time object that holds
-                gps.timestamp_utc.tm_year,  # the fix time.  Note you might
-                gps.timestamp_utc.tm_hour,  # not get all data like year, day,
-                gps.timestamp_utc.tm_min,  # month!
-                gps.timestamp_utc.tm_sec,
+                gps.timestamp_utc[1],  # Grab parts of the time from the
+                gps.timestamp_utc[2],  # struct_time object that holds
+                gps.timestamp_utc[0],  # the fix time.  Note you might
+                gps.timestamp_utc[4],  # not get all data like year, day,
+                gps.timestamp_utc[5],  # month!
+                gps.timestamp_utc[6],
             )
         )
         print(f"Latitude: {gps.latitude:.6f} degrees")

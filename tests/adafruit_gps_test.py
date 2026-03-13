@@ -141,14 +141,14 @@ def test_GPS_update_timestamp_UTC_date_None():
     gps = GPS(uart=UartMock())
     assert gps.datetime is None
     assert gps.timestamp_utc is None
-    exp_struct = time.struct_time((0, 0, 0, 22, 14, 11, 0, 0, -1))
+    exp_struct = [0, 0, 0, 22, 14, 11, 0, 0, -1]
     gps._update_timestamp_utc(time_utc="221411")
     assert gps.timestamp_utc == exp_struct
 
 
 def test_GPS_update_timestamp_UTC_date_not_None():
     gps = GPS(uart=UartMock())
-    exp_struct = time.struct_time((2021, 10, 2, 22, 14, 11, 0, 0, -1))
+    exp_struct = [2021, 10, 2, 22, 14, 11, 0, 0, -1]
     gps._update_timestamp_utc(time_utc="221411", date="021021")
     assert gps.timestamp_utc == exp_struct
 
@@ -156,7 +156,7 @@ def test_GPS_update_timestamp_UTC_date_not_None():
 def test_GPS_update_timestamp_timestamp_utc_was_not_none_new_date_none():
     gps = GPS(uart=UartMock())
     # set this to a value
-    gps.timestamp_utc = time.struct_time((2021, 10, 2, 22, 10, 11, 0, 0, -1))
+    gps.timestamp_utc = [2021, 10, 2, 22, 10, 11, 0, 0, -1]
     exp_struct = time.struct_time((2021, 10, 2, 22, 14, 11, 0, 0, -1))
     # update the timestamp
     gps._update_timestamp_utc(time_utc="221411")
